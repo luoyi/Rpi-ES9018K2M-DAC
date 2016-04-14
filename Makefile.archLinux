@@ -21,15 +21,17 @@ dtbs:
 modules_install:
 	gzip rpi-es9018k2m-dac.ko
 	gzip es9018k2m.ko
-	cp rpi-es9018k2m-dac.ko.gz /lib/modules/$(shell uname -r)/kernel/sound/soc/bcm/
-	cp es9018k2m.ko.gz /lib/modules/$(shell uname -r)/kernel/sound/soc/bcm/
+	mkdir -p $(DESTDIR)/lib/modules/$(shell uname -r)/kernel/sound/soc/bcm/
+	cp rpi-es9018k2m-dac.ko.gz $(DESTDIR)/lib/modules/$(shell uname -r)/kernel/sound/soc/bcm/
+	cp es9018k2m.ko.gz $(DESTDIR)/lib/modules/$(shell uname -r)/kernel/sound/soc/bcm/
 
 modules_remove:
-	rm /lib/modules/$(shell uname -r)/kernel/sound/soc/bcm/rpi-es9018k2m-dac.ko.gz
-	rm /lib/modules/$(shell uname -r)/kernel/sound/soc/bcm/es9018k2m.ko.gz
+	rm $(DESTDIR)/lib/modules/$(shell uname -r)/kernel/sound/soc/bcm/rpi-es9018k2m-dac.ko.gz
+	rm $(DESTDIR)/lib/modules/$(shell uname -r)/kernel/sound/soc/bcm/es9018k2m.ko.gz
 
 install_dtb:
-	cp rpi-es9018k2m-dac-overlay.dtb /boot/overlays/
+	mkdir -p $(DESTDIR)/boot/overlays/
+	cp rpi-es9018k2m-dac-overlay.dtb $(DESTDIR)/boot/overlays/
 
 remove_dtb:
 	rm /boot/overlays/rpi-es9018k2m-dac-overlay.dtb
