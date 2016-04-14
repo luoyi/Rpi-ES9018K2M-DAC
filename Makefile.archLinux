@@ -1,0 +1,36 @@
+ARCHDIR=4.4.7-1-ARCH
+KERNEL_SRC = /lib/modules/$(ARCHDIR)/build
+BUILD_DIR := $(shell pwd)
+DTC_DIR = /lib/modules/$(ARCHDIR)/build/scripts/dtc/
+VERBOSE = 1
+
+OBJS    = rpi-es9018k2m-dac.o es9018k2m.o
+
+obj-m := $(OBJS)
+
+all:
+	make -C $(KERNEL_SRC) SUBDIRS=$(BUILD_DIR) KBUILD_VERBOSE=$(VERBOSE) modules
+
+clean:
+	make -C $(KERNEL_SRC) SUBDIRS=$(BUILD_DIR) clean
+	rm -f rpi-es9018k2m-dac-overlay.dtb
+
+dtbs:
+	$(DTC_DIR)/dtc -@ -I dts -O dtb -o rpi-es9018k2m-dac-overlay.dtb rpi-es9018k2m-dac-overlay.dts
+
+modules_install:
+	gzip rpi-es9018k2m-dac.ko
+	gzip es9018k2m.ko
+	cp rpi-es9018k2m-dac.ko.gz /lib/modules/$(shell uname -r)/kernel/sound/soc/bcm/
+	cp es9018k2m.ko.gz /lib/modules/$(shell uname -r)/kernel/sound/soc/bcm/
+
+modules_remove:
+	rm /lib/modules/$(shell uname -r)/kernel/sound/soc/bcm/rpi-es9018k2m-dac.ko.gz
+	rm /lib/modules/$(shell uname -r)/kernel/sound/soc/bcm/es9018k2m.ko.gz
+
+install_dtb:
+	cp rpi-es9018k2m-dac-overlay.dtb /boot/overlays/
+
+remove_dtb:
+	rm /boot/overlays/rpi-es9018k2m-dac-overlay.dtb
+

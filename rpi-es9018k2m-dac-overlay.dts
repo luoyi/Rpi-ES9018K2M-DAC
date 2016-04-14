@@ -1,0 +1,43 @@
+// Definitions for ES9018K2M-DAC
+/dts-v1/;
+/plugin/;
+
+/ {
+	compatible = "brcm,bcm2708";
+
+	fragment@0 {
+		target = <&sound>;
+		frag0: __overlay__ {
+			compatible = "nobody,es9018k2m-dac";
+			i2s-controller = <&i2s>;
+			status = "okay";
+		};
+	};
+
+	fragment@1 {
+		target = <&i2s>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@2 {
+		target = <&i2c1>;
+		__overlay__ {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			status = "okay";
+
+			sabre9018q2c@48 {
+				#sound-dai-cells = <0>;
+				compatible = "ess,es9018k2m";
+				reg = <0x48>;
+				status = "okay";
+			};
+		};
+	};
+
+	__overrides__ {
+		slave = <&frag0>,"nobody,slave?";
+	};
+};
